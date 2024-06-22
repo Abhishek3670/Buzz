@@ -1,39 +1,33 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pipbuzz/pages/screens/name_screen.dart';
-import 'package:pipbuzz/widgets/themetoggle_button.dart';
+import 'package:pipbuzz/pages/screens/email_screen.dart';
+import 'package:pipbuzz/provider/registration_provider.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+class FirstNameLastNameScreen extends StatelessWidget {
+  const FirstNameLastNameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final registrationProvider = Provider.of<RegistrationProvider>(context);
+
+    final _firstNameController = TextEditingController();
+    final _lastNameController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
-        actions: [
-          ThemeToggleButton(),
-        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              'PIPBuzz',
+              'Register',
               style: TextStyle(
                 fontSize: 24.0,
                 color: Colors.deepPurple,
@@ -47,47 +41,38 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextFormField(
-                    controller: _usernameController,
+                    controller: _firstNameController,
                     decoration: InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'First Name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      icon: const Padding(
-                        padding: EdgeInsets.only(right: 10.0),
-                        child: Icon(Icons.person, color: Colors.deepPurple),
                       ),
                       contentPadding:
                           const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter your username';
+                        return 'Please enter your First Name';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20.0),
                   TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
+                    controller: _lastNameController,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'Last Name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      icon: const Padding(
-                        padding: EdgeInsets.only(right: 10.0),
-                        child: Icon(Icons.lock, color: Colors.deepPurple),
                       ),
                       contentPadding:
                           const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter your password';
+                        return 'Please enter your Last Name';
                       }
                       return null;
                     },
@@ -99,26 +84,23 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Form is valid, proceed with login logic
-                            // ... your login logic here
+                            registrationProvider
+                                .updateFirstName(_firstNameController.text);
+                            registrationProvider
+                                .updateLastName(_lastNameController.text);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const EmailVerificationScreen(),
+                              ),
+                            );
                           }
                         },
-                        child: const Text('Login'),
-                      ),
-                      const SizedBox(width: 10.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const FirstNameLastNameScreen()),
-                          );
-                        },
-                        child: const Text('Sign Up'),
+                        child: const Text('Next'),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

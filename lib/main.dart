@@ -1,26 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:pipbuzz/pages/login.dart'; // Import your login page class
+import 'package:pipbuzz/pages/login.dart';
+import 'package:pipbuzz/provider/ThemeChanger.dart';
+import 'package:pipbuzz/provider/registration_provider.dart';
+import 'package:provider/provider.dart'; // Import your login page class
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+      ChangeNotifierProvider(create: (_) => RegistrationProvider())
+    ],
+    child:  MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
   final bool darkMode = false;
 
   @override
   Widget build(BuildContext context) {
+    // final registrationProvider = Provider.of<RegistrationProvider>(context);
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.deepPurple,
-        fontFamily: 'Poppins'
+        //
       ),
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData(brightness: Brightness.dark),
-      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: themeNotifier.darkMode ? ThemeMode.dark : ThemeMode.light,
       // Set the home property to your login page widget
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }
